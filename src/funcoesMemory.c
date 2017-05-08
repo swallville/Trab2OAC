@@ -12,7 +12,12 @@ extern int32_t hi,lo;
 constante(kte) para obter o verdadeiro endereco( com offset ) chama a funcao
 FindAdressData que retorna em qual byte da memoria(enderecada em bytes) eh
 indicada pelo endereco, com isso apenas retorna a celula da memoria que
-determinada por esse byte*/
+determinada por esse byte
+*@param uint32_t address - endereco do registrador
+*		uint32_t kte - constate a ser somada no valor do adress
+*@return int32_t memory[adressToLoad][0] - primeiro elemento da memoria encontrado com o valor do endereco
+*@see FindAdressData
+*/
 int32_t lw(uint32_t address, uint16_t kte){
 	uint32_t adressToLoad;
 	adressToLoad = address + kte;
@@ -26,7 +31,13 @@ endereco(endereco(em byte) que contem o byte que queremos) e chamaos a funcao
 FindAdressByte que retorna em qual byte daquela palavra contem o que estamos
 procurando. Com isso selecionamos o byte, com uma mascara e ocorre um
 deslocamento dependendo da posicao para alinhar o byte na posicao menos
-significativa. Por ultimo passamos para um registrador de 8bits*/
+significativa. Por ultimo passamos para um registrador de 8bits
+*@param uint16_t adress - endereço do registrador
+*		uint16_t kte - constante a ser somada no valor do adress
+*@return int8_t Databyte - registrador de 8 bits
+*@see FindAdressByte
+*	FindAdressData
+*/
 int8_t  lb(uint32_t address, uint16_t kte) {
 	uint32_t adressToLoad;
 	uint32_t dado;
@@ -37,6 +48,7 @@ int8_t  lb(uint32_t address, uint16_t kte) {
 	adressToLoadAux = FindAdressData(adressToLoad);
 	adressToLoadByte = FindAdressByte(adressToLoad);
 
+		/*Switch da mascara de deslocamento do byte*/
 		switch(adressToLoadByte){
 			case 0:
 			dado = memory[adressToLoadAux][0];
@@ -75,7 +87,13 @@ int8_t  lb(uint32_t address, uint16_t kte) {
 /*A funcao load word realiza a mesma operacao da load byte com uma diferenca os
 enderecos sao disponiveis no byte 0 e 2, logo podemos utilizar o mesmo metodo da
 load byte apenas limitando o endereco que sera retornado pela funcao FindAdressByte.
-Utilizamos um mascara e passamos para um registrador de 16bits*/
+Utilizamos um mascara e passamos para um registrador de 16bits
+*@param uint32_t address - enderecodo registrador
+*		uint16_t kte - constante a ser somada no valor do adress
+*@return int16_t newData - registrador de 16 bits
+*@see FindAdressByte
+*	FindAdressData
+*/
 int16_t lh(uint32_t address, uint16_t kte) {
 	uint32_t adressToLoad,data;
 	uint16_t newData;
@@ -106,7 +124,13 @@ int16_t lh(uint32_t address, uint16_t kte) {
 /*-----------------------------Store Func-----------------------------*/
 /*A funcao store word grava uma palavra na memoria, para isso obtem o endereco
 real da palavra(com offset(kte)), com a funcao FindAdressData retorna o byte
-referente a palavra e aloca aquele dado na posicao */
+referente a palavra e aloca aquele dado na posicao 
+*@param uint32_t address - endereco do registrador
+*		uint16_t kte - constante a ser somada no valor do adress
+*		int32_t dado - informacao a ser alocada na memoria
+*@return void
+*@see FindAdressData
+*/
 void sw(uint32_t address, uint16_t kte, int32_t dado) {
 	uint32_t addressToSave;
 	addressToSave = address + kte;
@@ -115,9 +139,15 @@ void sw(uint32_t address, uint16_t kte, int32_t dado) {
 }
 /*A funcao store word realiza as mesma operacoes da funcao loadbyte, acha o
 endereco da palavra, depois do byte. Achado o byte correto, devemos aplicar
-uma mascara para zera o dado que esatva na memoria abrindo espaco para o o novo
+uma mascara para zera o dado que estava na memoria abrindo espaco para o o novo
 byte, com isso aplicamos a operacao OU/OR que tem a caracterista de repitir o
-valor da entrada, logo alocamos o byte*/
+valor da entrada, logo alocamos o byte
+*@param uint32_t address - endereco do registrador
+*		uint16_t kte - constante que sera somada no valor do endereco
+*		int8_t dado - informacao a ser alocada na memoria
+*@return void
+*@see FindAdressByte, FindAdressData
+*/
 void sb(uint32_t address, uint16_t kte, int8_t dado) {
 	uint32_t adressToSave,oldData,newData;
 	int adressToSaveAux,adressToSaveByte;
@@ -166,7 +196,12 @@ void sb(uint32_t address, uint16_t kte, int8_t dado) {
 		}
 }
 /*A funcao store halfword realiza as mesma operacoes, sabendo que os enderecos possices sao 0 e 2 na palavra aplicamos a mascara e a operacao OR, copiando o dado
-para a aquela posicao de memoria com os 16bits alocados*/
+para a aquela posicao de memoria com os 16bits alocados
+*@param uint32_t address - endereco do registrador
+*		uint16_t kte - constante que sera somada ao valor do endereco
+*		int16_t dado - informacao a ser alocada na memoria
+*@return void
+*@see FindAdressByte, FindAdressData*/
 void sh(uint32_t address, uint16_t kte, int16_t dado) {
 	uint32_t adressToLoad,data;
 	uint32_t newData;
@@ -197,7 +232,9 @@ void sh(uint32_t address, uint16_t kte, int16_t dado) {
 		}
 }
 /*-----------------------------Memory Started Func-----------------------------*/
-/*Inicializa a memoria com todos os elementos em zero*/
+/*Inicializa a memoria com todos os elementos em zero
+*@param void
+*@return void*/
 void zerarMemory(){
 	for (int i = 0; i < MEM_SIZE; ++i){
 		memory[i][0] = 0x00000000;
@@ -207,7 +244,9 @@ void zerarMemory(){
 	}
 }
 /*endereaca a segunda celula da memoria somente por criteria de visualizacao dos
-enderecos*/
+enderecos
+*@param void
+*@return void*/
 void adressMemory(){
 	pc = 0x00000000;
 	sp = 0x00003ffc;
@@ -217,7 +256,9 @@ void adressMemory(){
 			address = address + 0x00000004;
 		}
 }
-/*Imprimi a memoria em mem.txt*/
+/*Imprimi a memoria em mem.txt
+*@param void
+*@return void*/
 void printMemory(){
 	FILE * pfile = fopen ("mem.txt", "w");;
 	for (int i = 0; i < MEM_SIZE; ++i){
@@ -239,7 +280,10 @@ void printMemory(){
 	 }
 	 fclose (pfile);
 }
-/*Imprimi os registradores em reg.txt*/
+/*Imprimi os registradores em reg.txt
+*@param void
+*@return void
+*/
 void printReg(){
 	FILE * pfile = fopen ("reg.txt", "w");
 
@@ -281,7 +325,12 @@ void printReg(){
 	fprintf(pfile,"LO=0x%08x\n",lo);
 	fclose (pfile);
 }
-/*imprime uma determinada faixa da memoria e em um determinado formato*/
+/*imprime uma determinada faixa da memoria e em um determinado formato
+*@param int start - posicao inicial da memoria que sera mostrada
+*		int end - posicao final da memoria que sera mostrada
+*		char format - formato em que a memoria que sera mostrada (word, halfword, byte)
+*@return void
+*/
 void dump_mem(int start, int end, char format){
 	switch(format){
 		case 'h':
@@ -327,7 +376,10 @@ void dump_mem(int start, int end, char format){
 		break;
 	}
  }
- /*Imprimo os registradores em um determinado formato*/
+/*Imprimo os registradores em um determinado formato
+*@param char op - formato que o registrador sera mostrado (word, halfword, byte)
+*@return void
+*/
 void dump_reg(char op){
 	switch(op){
 		case 'h':
@@ -411,14 +463,18 @@ void dump_reg(char op){
 /*-----------------------------Auxiliar Func-----------------------------*/
 /*Retorna o byte referente ao endereco da memoria. Ao dividir o endereco por 4
 temos que a parte inteira representa a localizacao do byte na memoria
-( enderecada em byte->4 em 4)*/
+( enderecada em byte->4 em 4)
+*@param uint32_t address - endereco do registrador
+*@return int result - byte de posicao*/
 int FindAdressData(uint32_t address){
 	 int a,result;
 	 a =  address;
 	 result = a/4;
 	 return result;
 }
-/*O resto da divisao por byte indica em qual byte ele se encontra*/
+/*O resto da divisao por byte indica em qual byte ele se encontra
+*@param uint32_t address - endereco do registrador
+*@return int resultAux - byte de posicao*/
 int FindAdressByte(uint32_t address){
 	 int a,result,resultAux;
 	 a = address;

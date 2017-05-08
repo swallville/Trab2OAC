@@ -10,7 +10,9 @@ extern int32_t registers[32];
 
 /*Abre o aquivo, verifica se foi aberto com sucesso e em seguida ler ate
 o fim do arquivo, uma word por vez com a funcao fread e coloca na memoria
-a partir do endereco inical do .text (0x00000000)*/
+a partir do endereco inical do .text (0x00000000)
+*@param char *nomeArq - arquivo que sera aberto para realizacao da funcao (parte .text do MARS)
+*@return void*/
 void LoadPtext(char *nomeArq){
 	FILE * txt = fopen(nomeArq,"r");
 	int32_t buffer;
@@ -30,7 +32,9 @@ void LoadPtext(char *nomeArq){
 
 /*Abre o arquivo e o verifca, le o arquivo ate o final e com auxilio da funcao
 fread le uma word por vez do arquivo e guarda a parti do endereco
-determinado para o .data*/
+determinado para o .data
+*@param char *nomeArq - arquivo que sera aberto para realizacao da funca (pare .data do MARS)
+*@return void*/
 void LoadPdata(char *nomeArq){
 	int32_t buffer;
 	FILE * txt = fopen(nomeArq,"r");

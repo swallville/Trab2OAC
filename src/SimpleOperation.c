@@ -9,7 +9,8 @@
 
 /*A funcao run chama a funcao step que executa uma instrucao a partir do PC.
  Essa instrucao Run executa ate o final da memoria de programa
-ou se o syscall encerrar o programa*/
+ou se o syscall encerrar o programa
+*@see step*/
 void run(){
 	while( flag != 0 && pc != 0x1000){
 		step();
@@ -17,7 +18,8 @@ void run(){
 }
 /*A funcao run chama a funcao step que executa uma instrucao a partir do PC.
 Essa instrucao Run executa ate o final da memoria de programa ou se o syscall
-encerrar o programa. Porem com a diferenca de poder ver step-by-step do programa*/
+encerrar o programa. Porem com a diferenca de poder ver step-by-step do programa
+*@see stepStep*/
 void runStep(){
 	while( flag != 0 && pc != 0x1000){
 		stepStep();
@@ -25,7 +27,8 @@ void runStep(){
 }
 /*Funcao step chama a funcao fetch que seta a instrucao no registrador RI,
 depois chama a decode para realizar a decodificacao dos campos da instrucao
-e por ultimo executa a instrucao*/
+e por ultimo executa a instrucao
+*@see fetch, decode, execute*/
 void step(){
 	fetch(&pc);
 	decode();
@@ -46,7 +49,8 @@ void stepStep(){
 	execute();
 }
 /*Incrementa pc para a proxima instrucao e carrega o registrador RI com o
-conteudo do endereco de PC que aponta para a memoria*/
+conteudo do endereco de PC que aponta para a memoria
+*@see lw*/
 void fetch(uint32_t* pc){
 	ri = lw(*pc,0);
 	*pc = *pc + 0x00000004;
@@ -68,7 +72,8 @@ void decode(){
 	kte26 = ri & 0x03FFFFFF;
 }
 /*A partir dos campos opcode e func, eh definida a instrucao a ser relaizada
-e as executa*/
+e as executa
+*@see tipoR, j, sb, sh, jal, sw*/
 void execute(){
 	int i;
 	switch(opcode){

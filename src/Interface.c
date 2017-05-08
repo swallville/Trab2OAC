@@ -2,7 +2,8 @@
 #include <stdint.h>
 
 extern int flag;
-/*exibi o menu e pega a opcao*/
+/*exibi o menu e pega a opcao
+@return int op - opcao selecionado do menu*/
 int menu(){
 	int op;
 
@@ -21,7 +22,8 @@ int menu(){
 	return op;
 }
 
-/*Trata cada opcao, com a operacao deseja*/
+/*Trata cada opcao, com a operacao deseja
+*@param int op - opcao selecionado do menu*/
 void opcao(int op){
 	int opcao;
 	uint32_t adressBg,adressEnd;
